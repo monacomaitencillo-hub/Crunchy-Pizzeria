@@ -365,15 +365,21 @@
     <div class="login-overlay-sub">Acceso Administradores</div>
     <div class="login-box">
       <h2>Iniciar Sesión</h2>
-      <p>Solo el equipo autorizado puede acceder al panel de administración.</p>
-      <button class="btn-google" id="btnGoogle" onclick="loginConGoogle()">
-        <svg width="20" height="20" viewBox="0 0 48 48">
-          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-        </svg>
-        Continuar con Google
+      <p>Ingresá tus credenciales de administrador.</p>
+      <div class="form-group" style="text-align:left;margin-bottom:.85rem">
+        <label style="display:block;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Correo</label>
+        <input type="email" id="loginEmail" placeholder="admin@crunchypizzeria.com"
+          onkeyup="if(event.key==='Enter') document.getElementById('loginPassword').focus()"
+          style="width:100%;background:#111;border:1px solid var(--border);color:var(--white);font-family:'Lato',sans-serif;font-size:.95rem;padding:.7rem 1rem;border-radius:4px;outline:none;" />
+      </div>
+      <div class="form-group" style="text-align:left;margin-bottom:1.25rem">
+        <label style="display:block;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Contraseña</label>
+        <input type="password" id="loginPassword" placeholder="••••••••"
+          onkeyup="if(event.key==='Enter') loginConEmail()"
+          style="width:100%;background:#111;border:1px solid var(--border);color:var(--white);font-family:'Lato',sans-serif;font-size:.95rem;padding:.7rem 1rem;border-radius:4px;outline:none;" />
+      </div>
+      <button class="btn btn-primary" id="btnLogin" onclick="loginConEmail()" style="width:100%;padding:.85rem;font-size:.88rem">
+        Ingresar al Panel
       </button>
       <div class="login-error-msg" id="loginErrorMsg"></div>
     </div>
@@ -690,15 +696,42 @@
           <p class="subtitle">Gestioná quién puede acceder al panel. Solo superadmins pueden modificar esta lista.</p>
 
           <div class="panel" style="margin-bottom:1.25rem">
-            <div class="panel-header"><h3>Agregar administrador</h3></div>
-            <div style="padding:1.25rem 1.5rem">
-              <div class="form-row">
-                <input type="email" id="admin-new-email" placeholder="correo@gmail.com"
-                  style="background:#111;border:1px solid var(--border);color:var(--white);font-family:'Lato',sans-serif;font-size:.95rem;padding:.7rem 1rem;border-radius:4px;width:100%;outline:none;"
-                  onkeyup="if(event.key==='Enter') agregarAdmin()" />
-                <button class="btn btn-primary" onclick="agregarAdmin()">Agregar</button>
+            <div class="panel-header"><h3>Crear administrador</h3></div>
+            <div style="padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:.85rem">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+                <div class="form-group" style="margin:0">
+                  <label>Nombre</label>
+                  <input type="text" id="admin-new-nombre" placeholder="Ej: Juan López"
+                    style="width:100%;background:#111;border:1px solid var(--border);color:var(--white);font-family:'Lato',sans-serif;font-size:.9rem;padding:.65rem 1rem;border-radius:4px;outline:none;" />
+                </div>
+                <div class="form-group" style="margin:0">
+                  <label>Rol</label>
+                  <select id="admin-new-rol"
+                    style="width:100%;background:#111;border:1px solid var(--border);color:var(--white);font-family:'Lato',sans-serif;font-size:.9rem;padding:.65rem 1rem;border-radius:4px;outline:none;">
+                    <option value="admin">Admin</option>
+                    <option value="superadmin">Superadmin</option>
+                  </select>
+                </div>
               </div>
-              <div id="admin-add-alert" class="hidden" style="margin-top:.75rem"></div>
+              <div class="form-group" style="margin:0">
+                <label>Correo electrónico</label>
+                <input type="email" id="admin-new-email" placeholder="correo@ejemplo.com"
+                  style="width:100%;background:#111;border:1px solid var(--border);color:var(--white);font-family:'Lato',sans-serif;font-size:.9rem;padding:.65rem 1rem;border-radius:4px;outline:none;" />
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+                <div class="form-group" style="margin:0">
+                  <label>Contraseña</label>
+                  <input type="password" id="admin-new-pass" placeholder="Mínimo 6 caracteres"
+                    style="width:100%;background:#111;border:1px solid var(--border);color:var(--white);font-family:'Lato',sans-serif;font-size:.9rem;padding:.65rem 1rem;border-radius:4px;outline:none;" />
+                </div>
+                <div class="form-group" style="margin:0">
+                  <label>Confirmar contraseña</label>
+                  <input type="password" id="admin-new-pass2" placeholder="Repetí la contraseña"
+                    style="width:100%;background:#111;border:1px solid var(--border);color:var(--white);font-family:'Lato',sans-serif;font-size:.9rem;padding:.65rem 1rem;border-radius:4px;outline:none;" />
+                </div>
+              </div>
+              <div id="admin-add-alert" class="hidden"></div>
+              <button class="btn btn-primary" onclick="crearAdmin()" style="align-self:flex-start">Crear administrador</button>
             </div>
           </div>
 
@@ -731,100 +764,73 @@
     const db   = firebase.firestore();
     const auth = firebase.auth();
 
-    // ── AUTENTICACIÓN ─────────────────────────────────
+    // ── AUTENTICACIÓN (Email/Password) ────────────────
     let adminActual = null;
 
     auth.onAuthStateChanged(async (user) => {
-      if (!user) { mostrarLogin(); return; }
-
+      if (!user) { mostrarLoginScreen(); return; }
       try {
-        const adminsSnap = await db.collection('admins').get();
-
-        if (adminsSnap.empty) {
-          // Primera vez: el primer usuario en entrar se convierte en superadmin
-          await db.collection('admins').doc(user.email).set({
-            email: user.email,
-            nombre: user.displayName || user.email,
-            foto: user.photoURL || '',
-            rol: 'superadmin',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-          adminActual = { email: user.email, rol: 'superadmin', nombre: user.displayName };
-        } else {
-          const adminDoc = await db.collection('admins').doc(user.email).get();
-          if (!adminDoc.exists) {
-            mostrarError('Tu cuenta de Google no tiene acceso al panel.');
-            await auth.signOut();
-            return;
-          }
-          adminActual = { email: user.email, ...adminDoc.data() };
+        const adminDoc = await db.collection('admins').doc(user.email).get();
+        if (!adminDoc.exists) {
+          await auth.signOut(); return;
         }
-
+        adminActual = { email: user.email, ...adminDoc.data() };
         mostrarPanel(user);
       } catch(e) {
-        mostrarError('Error al verificar acceso. Intentá de nuevo.');
         await auth.signOut();
       }
     });
 
-    function mostrarLogin(msg) {
+    function mostrarLoginScreen() {
       document.getElementById('loginOverlay').classList.remove('hidden');
-      if (msg) {
-        const el = document.getElementById('loginErrorMsg');
-        el.textContent = msg;
-        el.style.display = 'block';
-      }
-    }
-
-    function mostrarError(msg) {
-      const el = document.getElementById('loginErrorMsg');
-      el.textContent = msg;
-      el.style.display = 'block';
+      document.getElementById('loginErrorMsg').style.display = 'none';
     }
 
     function mostrarPanel(user) {
       document.getElementById('loginOverlay').classList.add('hidden');
-
-      // Actualizar sidebar con datos reales
-      const foto = document.getElementById('sidebarFoto');
-      const avatar = document.getElementById('sidebarAvatar');
-      if (user.photoURL) {
-        foto.src = user.photoURL;
-        foto.style.display = 'block';
-        avatar.style.display = 'none';
-      } else {
-        avatar.textContent = (user.displayName || user.email)[0].toUpperCase();
-      }
-      document.getElementById('sidebarNombre').textContent = user.displayName || 'Administrador';
+      document.getElementById('sidebarAvatar').textContent = (adminActual.nombre || user.email)[0].toUpperCase();
+      document.getElementById('sidebarNombre').textContent = adminActual.nombre || 'Administrador';
       document.getElementById('sidebarEmail').textContent = user.email;
-
-      // Mostrar sección Admins solo para superadmin
       if (adminActual.rol === 'superadmin') {
         document.getElementById('navAdmins').style.display = 'flex';
       }
-
       initDashboard();
     }
 
-    async function loginConGoogle() {
-      const btn = document.getElementById('btnGoogle');
-      btn.disabled = true; btn.textContent = 'Conectando...';
-      document.getElementById('loginErrorMsg').style.display = 'none';
-      try {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        await auth.signInWithPopup(provider);
-      } catch(e) {
-        mostrarError('No se pudo iniciar sesión. Intentá de nuevo.');
-        btn.disabled = false;
-        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continuar con Google`;
+    async function loginConEmail() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass  = document.getElementById('loginPassword').value;
+      const errEl = document.getElementById('loginErrorMsg');
+      const btn   = document.getElementById('btnLogin');
+      errEl.style.display = 'none';
+
+      if (!email || !pass) {
+        errEl.textContent = 'Ingresá correo y contraseña.';
+        errEl.style.display = 'block'; return;
       }
+
+      btn.disabled = true; btn.textContent = 'Ingresando...';
+      try {
+        await auth.signInWithEmailAndPassword(email, pass);
+      } catch(e) {
+        const msgs = {
+          'auth/user-not-found':  'Correo no registrado.',
+          'auth/wrong-password':  'Contraseña incorrecta.',
+          'auth/invalid-email':   'Correo inválido.',
+          'auth/too-many-requests': 'Demasiados intentos. Esperá unos minutos.',
+        };
+        errEl.textContent = msgs[e.code] || 'Error al ingresar. Intentá de nuevo.';
+        errEl.style.display = 'block';
+      }
+      btn.disabled = false; btn.textContent = 'Ingresar al Panel';
     }
 
     async function cerrarSesion() {
       await auth.signOut();
       adminActual = null;
-      document.getElementById('loginOverlay').classList.remove('hidden');
-      document.getElementById('loginErrorMsg').style.display = 'none';
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
+      mostrarLoginScreen();
     }
 
     // ── RECOMPENSAS (configuración) ───────────────────
@@ -1396,6 +1402,15 @@
     }
 
     // ── ADMINS ────────────────────────────────────────
+    // App secundaria para crear usuarios sin cerrar sesión del admin actual
+    let secondaryApp;
+    try {
+      secondaryApp = firebase.app('secondary');
+    } catch(e) {
+      secondaryApp = firebase.initializeApp(firebaseConfig, 'secondary');
+    }
+    const secondaryAuth = secondaryApp.auth();
+
     async function loadAdmins() {
       document.getElementById('admins-list-container').innerHTML = '<div class="loading-state">Cargando...</div>';
       const snap = await db.collection('admins').orderBy('createdAt', 'asc').get();
@@ -1409,51 +1424,96 @@
 
       document.getElementById('admins-list-container').innerHTML = `
         <table class="data-table">
-          <thead><tr><th>Administrador</th><th>Email</th><th>Rol</th><th></th></tr></thead>
+          <thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead>
           <tbody>
             ${admins.map(a => `
               <tr>
                 <td><div class="td-name">${a.nombre || '—'}</div></td>
                 <td><span style="color:var(--muted);font-size:.82rem">${a.email}</span></td>
+                <td><span class="badge ${a.rol === 'superadmin' ? 'badge-aprobado' : 'badge-pendiente'}">${a.rol === 'superadmin' ? 'Superadmin' : 'Admin'}</span></td>
                 <td>
-                  <span class="badge ${a.rol === 'superadmin' ? 'badge-aprobado' : 'badge-pendiente'}">
-                    ${a.rol === 'superadmin' ? 'Superadmin' : 'Admin'}
-                  </span>
-                </td>
-                <td>
-                  ${a.email !== adminActual.email ? `
-                    <button class="btn btn-danger btn-sm" onclick="eliminarAdmin('${a.email}')">Eliminar</button>
-                  ` : '<span style="font-size:.75rem;color:var(--muted)">Tú</span>'}
+                  <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+                    <button class="btn btn-ghost btn-sm" onclick="cambiarPassword('${a.email}')">🔑 Cambiar clave</button>
+                    ${a.email !== adminActual.email
+                      ? `<button class="btn btn-danger btn-sm" onclick="eliminarAdmin('${a.email}','${a.nombre||''}')">✕ Eliminar</button>`
+                      : '<span style="font-size:.75rem;color:var(--muted);align-self:center">Tú</span>'}
+                  </div>
                 </td>
               </tr>`).join('')}
           </tbody>
         </table>`;
     }
 
-    async function agregarAdmin() {
-      const email = document.getElementById('admin-new-email').value.trim().toLowerCase();
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showAlert('admin-add-alert', 'Ingresá un correo válido.', 'error'); return;
-      }
+    async function crearAdmin() {
+      const nombre = document.getElementById('admin-new-nombre').value.trim();
+      const email  = document.getElementById('admin-new-email').value.trim().toLowerCase();
+      const pass   = document.getElementById('admin-new-pass').value;
+      const pass2  = document.getElementById('admin-new-pass2').value;
+      const rol    = document.getElementById('admin-new-rol').value;
+
+      if (!nombre) { showAlert('admin-add-alert', 'El nombre es obligatorio.', 'error'); return; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAlert('admin-add-alert', 'Correo inválido.', 'error'); return; }
+      if (!pass || pass.length < 6) { showAlert('admin-add-alert', 'La contraseña debe tener al menos 6 caracteres.', 'error'); return; }
+      if (pass !== pass2) { showAlert('admin-add-alert', 'Las contraseñas no coinciden.', 'error'); return; }
+
       hideAlert('admin-add-alert');
       try {
-        const existing = await db.collection('admins').doc(email).get();
-        if (existing.exists) { showAlert('admin-add-alert', 'Ese correo ya es administrador.', 'error'); return; }
+        // Crear en Firebase Auth usando app secundaria (no cierra sesión actual)
+        await secondaryAuth.createUserWithEmailAndPassword(email, pass);
+        await secondaryAuth.signOut();
+
+        // Guardar en Firestore
         await db.collection('admins').doc(email).set({
-          email,
-          nombre: email.split('@')[0],
-          foto: '',
-          rol: 'admin',
+          email, nombre, rol,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        document.getElementById('admin-new-email').value = '';
-        showAlert('admin-add-alert', `✓ ${email} agregado como administrador.`, 'info');
+
+        ['admin-new-nombre','admin-new-email','admin-new-pass','admin-new-pass2'].forEach(id => {
+          document.getElementById(id).value = '';
+        });
+        showAlert('admin-add-alert', `✓ Administrador "${nombre}" creado correctamente.`, 'info');
         loadAdmins();
-      } catch(e) { showAlert('admin-add-alert', 'Error al agregar.', 'error'); }
+      } catch(e) {
+        const msgs = {
+          'auth/email-already-in-use': 'Ese correo ya tiene una cuenta.',
+          'auth/invalid-email': 'Correo inválido.',
+          'auth/weak-password': 'La contraseña es muy débil.',
+        };
+        showAlert('admin-add-alert', msgs[e.code] || 'Error al crear. Intentá de nuevo.', 'error');
+      }
     }
 
-    async function eliminarAdmin(email) {
-      if (!confirm(`¿Eliminar a ${email} como administrador?`)) return;
+    async function cambiarPassword(email) {
+      const nuevaPass = prompt(`Nueva contraseña para ${email} (mínimo 6 caracteres):`);
+      if (!nuevaPass) return;
+      if (nuevaPass.length < 6) { alert('La contraseña debe tener al menos 6 caracteres.'); return; }
+
+      // Si es el admin actual, cambiamos directamente
+      if (email === adminActual.email) {
+        try {
+          await auth.currentUser.updatePassword(nuevaPass);
+          alert('✓ Contraseña actualizada.');
+        } catch(e) {
+          if (e.code === 'auth/requires-recent-login') {
+            alert('Por seguridad, cerrá sesión e ingresá de nuevo antes de cambiar tu propia contraseña.');
+          } else {
+            alert('Error al cambiar contraseña.');
+          }
+        }
+        return;
+      }
+
+      // Para otros admins: enviar email de reset (no podemos cambiar pass ajena sin Admin SDK)
+      try {
+        await auth.sendPasswordResetEmail(email);
+        alert(`✓ Se envió un email de restablecimiento de contraseña a ${email}.`);
+      } catch(e) {
+        alert('Error al enviar el email. Verificá que el correo esté registrado.');
+      }
+    }
+
+    async function eliminarAdmin(email, nombre) {
+      if (!confirm(`¿Eliminar a "${nombre || email}" como administrador?\nYa no podrá ingresar al panel.`)) return;
       try {
         await db.collection('admins').doc(email).delete();
         loadAdmins();
