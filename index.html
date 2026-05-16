@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRUNCHY PIZZERIA — Pizza al Estilo Nueva York</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">CRUNCHY PIZZERIA</div>
+    <ul class="nav-links">
+      <li><a href="https://menu.fu.do/crunchypizzeria/qr-menu" target="_blank">Menú</a></li>
+      <li><a href="#about">Nosotros</a></li>
+      <li><a href="#contact">Contacto</a></li>
+    </ul>
+    <a href="#order" class="nav-cta">Pedir Ahora</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-tag">EST. 1987 · NUEVA YORK</span>
+      <h1 class="hero-title">La Auténtica<br />Porción de<br />Nueva York.</h1>
+      <p class="hero-sub">Masa estirada a mano, horneada en piedra, doblada al medio — igual que siempre.</p>
+      <div class="hero-actions">
+        <a href="https://menu.fu.do/crunchypizzeria/qr-menu" target="_blank" class="btn-primary">Ver el Menú</a>
+        <a href="#order" class="btn-secondary">Pedir Online</a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- TAGLINE STRIP -->
+  <div class="strip">
+    <div class="strip-track">
+      <span>ESTILO NUEVA YORK</span><span class="dot">·</span>
+      <span>HORNO DE PIEDRA</span><span class="dot">·</span>
+      <span>MASA ARTESANAL</span><span class="dot">·</span>
+      <span>FRESCO CADA DÍA</span><span class="dot">·</span>
+      <span>ESTILO NUEVA YORK</span><span class="dot">·</span>
+      <span>HORNO DE PIEDRA</span><span class="dot">·</span>
+      <span>MASA ARTESANAL</span><span class="dot">·</span>
+      <span>FRESCO CADA DÍA</span><span class="dot">·</span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about-img"></div>
+    <div class="about-text">
+      <span class="section-tag">Nuestra Historia</span>
+      <h2>Pizza como<br />debe ser.</h2>
+      <p>Trajimos la pizzería de barrio de Brooklyn directo a tu ciudad. Cada pizza empieza con una masa fermentada en frío por 48 horas, tomates San Marzano triturados y mozzarella entera estirada fresca cada mañana.</p>
+      <p>Sin atajos. Sin cintas transportadoras. Solo un horno de piedra a 480 °C y alguien que ama la pizza de verdad.</p>
+      <a href="https://menu.fu.do/crunchypizzeria/qr-menu" target="_blank" class="btn-primary">Explorar el Menú</a>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section class="menu-section" id="menu">
+    <div class="menu-header">
+      <span class="section-tag">Lo Que Hacemos</span>
+      <h2>El Menú</h2>
+      <p class="menu-subtitle">Una selección de nuestras pizzas. Mirá el menú completo para ver todas las opciones.</p>
+    </div>
+    <div class="carousel-wrapper">
+      <button class="carousel-btn prev" id="carouselPrev">&#8592;</button>
+      <div class="carousel-track-container">
+        <div class="carousel-track" id="carouselTrack">
+
+          <div class="menu-card">
+            <div class="menu-card-img img-margherita"></div>
+            <div class="menu-card-body">
+              <div class="menu-card-top">
+                <h3>Margarita</h3>
+                <span class="price">$7.900</span>
+              </div>
+              <p>Salsa Pomodoro de la Casa, Queso Mozarella, Albahaca.</p>
+            </div>
+          </div>
+
+          <div class="menu-card featured">
+            <div class="badge">La Favorita</div>
+            <div class="menu-card-img img-pepperoni"></div>
+            <div class="menu-card-body">
+              <div class="menu-card-top">
+                <h3>Super Pepperoni</h3>
+                <span class="price">$8.500</span>
+              </div>
+              <p>Salsa Pomodoro de la Casa, Queso Mozarella, 30 Pepperoni.</p>
+            </div>
+          </div>
+
+          <div class="menu-card">
+            <div class="menu-card-img img-crunchy"></div>
+            <div class="menu-card-body">
+              <div class="menu-card-top">
+                <h3>Crunchy</h3>
+                <span class="price">$11.200</span>
+              </div>
+              <p>Salsa Pomodoro de la Casa, Mozarella, Camarones al Pil Pil, Pesto y Cilantro.</p>
+            </div>
+          </div>
+
+          <div class="menu-card">
+            <div class="menu-card-img img-bbq"></div>
+            <div class="menu-card-body">
+              <div class="menu-card-top">
+                <h3>Pollo Barbecue</h3>
+                <span class="price">$10.800</span>
+              </div>
+              <p>Base salsa barbecue, Queso Mozarella, Pollo, Tocino, Cebolla.</p>
+            </div>
+          </div>
+
+          <div class="menu-card">
+            <div class="menu-card-img img-cuatroquesos"></div>
+            <div class="menu-card-body">
+              <div class="menu-card-top">
+                <h3>Cuatro Quesos</h3>
+                <span class="price">$10.500</span>
+              </div>
+              <p>Salsa Pomodoro, Mozarella, Queso Azul, Queso de Cabra, Parmesano.</p>
+            </div>
+          </div>
+
+          <div class="menu-card">
+            <div class="menu-card-img img-espanola"></div>
+            <div class="menu-card-body">
+              <div class="menu-card-top">
+                <h3>Española</h3>
+                <span class="price">$11.500</span>
+              </div>
+              <p>Salsa Pomodoro, Mozarella, Chorizo, Jamón, Tomate, Pimentón y Aceitunas.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <button class="carousel-btn next" id="carouselNext">&#8594;</button>
+    </div>
+
+    <div class="carousel-dots" id="carouselDots"></div>
+
+    <div class="menu-cta">
+      <a href="https://menu.fu.do/crunchypizzeria/qr-menu" target="_blank" class="btn-primary large">Ver Menú Completo</a>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="stat">
+      <span class="stat-num">480°</span>
+      <span class="stat-label">Temperatura del Horno</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-num">48h</span>
+      <span class="stat-label">Fermentación de la Masa</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-num">37+</span>
+      <span class="stat-label">Años Haciendo Pizza</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-num">1</span>
+      <span class="stat-label">Receta Secreta</span>
+    </div>
+  </section>
+
+  <!-- ORDER / CTA -->
+  <section class="cta-section" id="order">
+    <div class="cta-overlay"></div>
+    <div class="cta-content">
+      <span class="section-tag light">¿Tenés hambre?</span>
+      <h2>Pedí una Pizza Esta Noche.</h2>
+      <p>Retiro o delivery — caliente, rápido y mejor que cualquier otra cosa del barrio.</p>
+      <a href="#" class="btn-primary large">Pedir Online</a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact-section" id="contact">
+    <div class="contact-info">
+      <span class="section-tag">Encontranos</span>
+      <h2>Vení con Hambre.</h2>
+      <ul class="contact-list">
+        <li>
+          <strong>Dirección</strong>
+          <span>Av. Gral. Velásquez 314, Puchuncaví, Valparaíso</span>
+        </li>
+        <li>
+          <strong>Horarios</strong>
+          <span>Lun – Vie: 15:00 – 23:00<br />Sáb – Dom: 13:00 – 23:00</span>
+        </li>
+        <li>
+          <strong>Teléfono</strong>
+          <span>+56 9 7716 2181</span>
+        </li>
+        <li>
+          <strong>Instagram</strong>
+          <span>@crunchy_puchuncavi</span>
+        </li>
+      </ul>
+    </div>
+    <div class="contact-map">
+      <iframe
+        src="https://maps.google.com/maps?q=Av.+Gral.+Vel%C3%A1squez+314,+Puchuncav%C3%AD,+Valpara%C3%ADso,+Chile&output=embed&hl=es"
+        width="100%"
+        height="100%"
+        style="border:0; min-height:400px; display:block;"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Ubicación Crunchy Pizzeria">
+      </iframe>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-logo">CRUNCHY PIZZERIA</div>
+    <p class="footer-copy">© 2026 Crunchy Pizzeria · Puchuncaví, Valparaíso · Todos los derechos reservados.</p>
+    <div class="footer-links">
+      <a href="#">Instagram</a>
+      <a href="#">TikTok</a>
+      <a href="#">Yelp</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
