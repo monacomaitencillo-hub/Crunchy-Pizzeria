@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Crunchy Pizzeria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:     #C8102E;
+      --dark:    #0f0f0f;
+      --sidebar: #161616;
+      --card:    #1c1c1c;
+      --border:  #2a2a2a;
+      --white:   #ffffff;
+      --muted:   rgba(255,255,255,0.4);
+      --green:   #22c55e;
+      --yellow:  #eab308;
+      --blue:    #3b82f6;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--dark);
+      color: var(--white);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 230px;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 50;
+    }
+
+    .sidebar-logo {
+      padding: 1.5rem 1.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo span {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--white);
+    }
+    .sidebar-logo small {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-top: 0.15rem;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 1rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      overflow-y: auto;
+    }
+
+    .nav-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.75rem 0.75rem 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      position: relative;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--white); }
+    .nav-item.active { background: rgba(200,16,46,0.15); color: var(--white); }
+    .nav-item.active svg { color: var(--red); }
+    .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--red);
+      color: var(--white);
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 50px;
+      min-width: 18px;
+      text-align: center;
+      display: none;
+    }
+    .nav-badge.show { display: block; }
+
+    .sidebar-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--red);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
+    }
+    .sidebar-footer-info { flex: 1; min-width: 0; }
+    .sidebar-footer-info strong { display: block; font-size: 0.82rem; }
+    .sidebar-footer-info small { font-size: 0.68rem; color: var(--muted); }
+    .logout-btn { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .logout-btn:hover { color: var(--white); }
+
+    /* ── MAIN ── */
+    .main { margin-left: 230px; flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    .topbar {
+      position: sticky; top: 0;
+      background: var(--dark);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 40;
+    }
+    .topbar-title { font-family: 'Oswald', sans-serif; font-size: 1.15rem; font-weight: 600; letter-spacing: 0.04em; }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; }
+    .badge-live { display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); }
+    .badge-live .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .btn-back { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .btn-back:hover { color: var(--white); }
+
+    /* ── CONTENT / VIEWS ── */
+    .content { padding: 2rem; flex: 1; }
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ── STAT CARDS ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; }
+    .stat-card-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
+    .stat-card-value { font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 700; line-height: 1; }
+    .stat-card-sub { font-size: 0.74rem; color: var(--muted); margin-top: 0.35rem; }
+
+    /* ── PANEL ── */
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 1.25rem; }
+    .panel-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .panel-header h3 { font-family: 'Oswald', sans-serif; font-size: 0.95rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+
+    /* ── TABLE ── */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th { padding: 0.65rem 1.5rem; text-align: left; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+    .data-table td { padding: 0.85rem 1.5rem; font-size: 0.875rem; border-bottom: 1px solid #222; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .td-name { font-weight: 700; }
+    .td-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; }
+    .td-price { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 700; }
+    .td-pts { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 700; color: var(--red); }
+    .empty-row td { text-align: center; color: var(--muted); font-size: 0.875rem; padding: 2rem; }
+
+    /* ── STATUS BADGES ── */
+    .badge { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.22rem 0.6rem; border-radius: 50px; }
+    .badge::before { content:''; width:5px;height:5px;border-radius:50%;background:currentColor; }
+    .badge-pendiente { background:rgba(59,130,246,.12); color:var(--blue); }
+    .badge-aprobado  { background:rgba(34,197,94,.12);  color:var(--green); }
+    .badge-rechazado { background:rgba(255,255,255,.06); color:var(--muted); }
+
+    /* ── BUTTONS ── */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; font-family: 'Lato', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.6rem 1.2rem; border-radius: 4px; border: none; cursor: pointer; transition: background .2s, transform .1s; }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--red); color: var(--white); }
+    .btn-primary:hover { background: #a50d24; }
+    .btn-primary:disabled { background: #555; cursor: not-allowed; }
+    .btn-ghost { background: rgba(255,255,255,.07); color: var(--white); }
+    .btn-ghost:hover { background: rgba(255,255,255,.12); }
+    .btn-green { background: rgba(34,197,94,.15); color: var(--green); }
+    .btn-green:hover { background: rgba(34,197,94,.25); }
+    .btn-danger { background: rgba(200,16,46,.15); color: #ff6b6b; }
+    .btn-danger:hover { background: rgba(200,16,46,.25); }
+    .btn-sm { font-size: 0.7rem; padding: 0.4rem 0.8rem; }
+    .btn-lg { font-size: 0.9rem; padding: 0.85rem 2rem; }
+
+    /* ── FORM ── */
+    .form-page { max-width: 520px; margin: 0 auto; }
+    .form-page h2 { font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.35rem; }
+    .form-page .subtitle { font-size: 0.85rem; color: var(--muted); margin-bottom: 2rem; }
+
+    .form-panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.75rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.45rem; }
+    .form-group input {
+      width: 100%; background: #111; border: 1px solid var(--border);
+      color: var(--white); font-family: 'Lato', sans-serif; font-size: 0.95rem;
+      padding: 0.7rem 1rem; border-radius: 4px; outline: none; transition: border-color .2s;
+    }
+    .form-group input:focus { border-color: var(--red); }
+    .form-group input::placeholder { color: #444; }
+    .form-row { display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; align-items: end; }
+
+    .cliente-card {
+      background: rgba(200,16,46,.08);
+      border: 1px solid rgba(200,16,46,.2);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cliente-card-name { font-weight: 700; font-size: 1rem; }
+    .cliente-card-rut { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
+    .cliente-card-pts { font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--red); text-align: right; }
+    .cliente-card-pts small { display: block; font-family: 'Lato', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+    .puntos-preview {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.2rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .puntos-preview span { font-family: 'Oswald', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--green); }
+
+    .success-box {
+      background: rgba(34,197,94,.08);
+      border: 1px solid rgba(34,197,94,.2);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+    }
+    .success-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .success-box h3 { font-family: 'Oswald', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .success-box p { font-size: 0.875rem; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; }
+    .success-pts { font-family: 'Oswald', sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--green); }
+    .success-pts small { font-family: 'Lato', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: block; }
+
+    .alert { padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.82rem; font-weight: 600; margin-bottom: 1rem; }
+    .alert-info  { background: rgba(59,130,246,.1); color: var(--blue); border: 1px solid rgba(59,130,246,.2); }
+    .alert-error { background: rgba(200,16,46,.1);  color: #ff6b6b;  border: 1px solid rgba(200,16,46,.2); }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+
+    .hidden { display: none !important; }
+
+    /* ── SEARCH BAR ── */
+    .search-bar { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .search-bar input {
+      flex: 1; background: var(--card); border: 1px solid var(--border);
+      color: var(--white); font-family: 'Lato', sans-serif; font-size: 0.9rem;
+      padding: 0.65rem 1rem; border-radius: 4px; outline: none; transition: border-color .2s;
+    }
+    .search-bar input:focus { border-color: var(--red); }
+
+    /* ── RECOMPENSAS GRID ── */
+    .recompensas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 1rem; padding: 1.5rem; }
+    .recompensa-card { background: #141414; border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+    .recompensa-card .emoji { font-size: 2rem; margin-bottom: 0.5rem; }
+    .recompensa-card h4 { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.25rem; }
+    .recompensa-card p { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.75rem; }
+    .recompensa-pts { font-family: 'Oswald', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--red); }
+    .recompensa-pts small { font-family: 'Lato', sans-serif; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── CANJES ── */
+    .canje-row { padding: 1rem 1.5rem; border-bottom: 1px solid #1f1f1f; display: flex; align-items: center; gap: 1rem; }
+    .canje-row:last-child { border-bottom: none; }
+    .canje-info { flex: 1; }
+    .canje-info strong { display: block; font-size: 0.9rem; }
+    .canje-info span { font-size: 0.78rem; color: var(--muted); }
+    .canje-pts { font-family: 'Oswald', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--red); white-space: nowrap; margin-right: 0.5rem; }
+    .canje-actions { display: flex; gap: 0.5rem; }
+    .empty-state { text-align: center; padding: 3rem; color: var(--muted); font-size: 0.875rem; }
+    .empty-state .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+    .loading-state { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>CRUNCHY PIZZERIA</span>
+      <small>Panel de Administración</small>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">General</div>
+      <button class="nav-item active" data-view="dashboard" onclick="showView('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </button>
+      <div class="nav-label">Fidelización</div>
+      <button class="nav-item" data-view="compra" onclick="showView('compra')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Registrar Compra
+      </button>
+      <button class="nav-item" data-view="canjes" onclick="showView('canjes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+        Canjes Pendientes
+        <span class="nav-badge" id="canjesBadge"></span>
+      </button>
+      <button class="nav-item" data-view="clientes" onclick="showView('clientes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clientes
+      </button>
+      <button class="nav-item" data-view="nuevo-cliente" onclick="showView('nuevo-cliente')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        Nuevo Cliente
+      </button>
+      <button class="nav-item" data-view="recompensas" onclick="showView('recompensas')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Recompensas
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="avatar">A</div>
+      <div class="sidebar-footer-info">
+        <strong>Administrador</strong>
+        <small>Crunchy Pizzeria</small>
+      </div>
+      <a href="portal.html" class="logout-btn" title="Salir">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <span class="topbar-title" id="topbarTitle">Dashboard</span>
+      <div class="topbar-right">
+        <div class="badge-live"><div class="dot"></div>En vivo</div>
+        <a href="index.html" class="btn-back">← Volver al sitio</a>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ══ VIEW: DASHBOARD ══ -->
+      <div id="view-dashboard" class="view active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-label">Clientes registrados</div>
+            <div class="stat-card-value" id="stat-clientes">—</div>
+            <div class="stat-card-sub">Total acumulado</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Compras hoy</div>
+            <div class="stat-card-value" id="stat-compras-hoy">—</div>
+            <div class="stat-card-sub" id="stat-ventas-hoy">$0 en ventas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Puntos otorgados hoy</div>
+            <div class="stat-card-value" id="stat-puntos-hoy">—</div>
+            <div class="stat-card-sub">Puntos acumulados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Canjes pendientes</div>
+            <div class="stat-card-value" id="stat-canjes-pendientes">—</div>
+            <div class="stat-card-sub">Por aprobar</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Últimas compras</h3>
+          </div>
+          <div id="recent-compras-container">
+            <div class="loading-state">Cargando...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ VIEW: REGISTRAR COMPRA ══ -->
+      <div id="view-compra" class="view">
+        <div class="form-page">
+          <h2>Registrar Compra</h2>
+          <p class="subtitle">Ingresá el RUT del cliente para acumular sus puntos de fidelidad.</p>
+
+          <!-- STEP 1: RUT -->
+          <div id="step-rut" class="form-panel">
+            <div class="form-group">
+              <label>RUT del cliente</label>
+              <div class="form-row">
+                <input type="text" id="input-rut" placeholder="12345678-9" maxlength="12"
+                  onkeyup="if(event.key==='Enter') buscarCliente()" />
+                <button class="btn btn-primary" onclick="buscarCliente()" id="btn-buscar">Buscar</button>
+              </div>
+            </div>
+            <div id="rut-alert" class="hidden"></div>
+          </div>
+
+          <!-- STEP 2: DATOS -->
+          <div id="step-datos" class="hidden" style="margin-top:1rem;">
+            <div class="form-panel">
+              <div id="cliente-card-found" class="cliente-card hidden">
+                <div>
+                  <div class="cliente-card-name" id="cc-nombre"></div>
+                  <div class="cliente-card-rut" id="cc-rut"></div>
+                </div>
+                <div class="cliente-card-pts">
+                  <div id="cc-puntos"></div>
+                  <small>puntos</small>
+                </div>
+              </div>
+
+              <div id="nuevo-cliente-fields" class="hidden">
+                <div class="alert alert-info">Cliente nuevo — completá sus datos.</div>
+                <div class="form-group">
+                  <label>Nombre completo</label>
+                  <input type="text" id="input-nombre" placeholder="Ej: María González" />
+                </div>
+                <div class="form-group">
+                  <label>Teléfono (opcional)</label>
+                  <input type="text" id="input-telefono" placeholder="+56 9 1234 5678" />
+                </div>
+                <hr class="divider" />
+              </div>
+
+              <div class="form-group">
+                <label>Monto de la compra ($)</label>
+                <input type="number" id="input-monto" placeholder="Ej: 13300" min="0" step="100"
+                  oninput="actualizarPreviewPuntos()" />
+              </div>
+
+              <div class="puntos-preview" id="puntos-preview">
+                <span>0 puntos</span> a acumular — ingresá el monto
+              </div>
+
+              <div id="datos-alert" class="hidden"></div>
+
+              <div style="display:flex;gap:.75rem;margin-top:.5rem;">
+                <button class="btn btn-ghost" onclick="resetCompra()">Cancelar</button>
+                <button class="btn btn-primary btn-lg" style="flex:1" onclick="confirmarCompra()" id="btn-confirmar">Confirmar Compra</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: SUCCESS -->
+          <div id="step-success" class="hidden" style="margin-top:1rem;">
+            <div class="success-box">
+              <div class="success-icon">🍕</div>
+              <h3>¡Compra registrada!</h3>
+              <p id="success-texto"></p>
+              <div class="success-pts" id="success-pts"></div>
+              <br/>
+              <button class="btn btn-primary btn-lg" onclick="resetCompra()" style="margin-top:1rem;">Nueva compra</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ VIEW: CANJES ══ -->
+      <div id="view-canjes" class="view">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Canjes Pendientes</h3>
+          </div>
+          <div id="canjes-container">
+            <div class="loading-state">Cargando...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ VIEW: CLIENTES ══ -->
+      <div id="view-clientes" class="view">
+        <div class="search-bar">
+          <input type="text" id="search-clientes" placeholder="Buscar por nombre o RUT..." oninput="filtrarClientes()" />
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Todos los clientes</h3>
+            <span id="clientes-count" style="font-size:.75rem;color:var(--muted)"></span>
+          </div>
+          <div id="clientes-container">
+            <div class="loading-state">Cargando...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ VIEW: NUEVO CLIENTE ══ -->
+      <div id="view-nuevo-cliente" class="view">
+        <div class="form-page">
+          <h2>Nuevo Cliente</h2>
+          <p class="subtitle">Registrá un cliente en el sistema de fidelidad sin necesidad de asociar una compra.</p>
+
+          <div id="nc-form" class="form-panel">
+            <div class="form-group">
+              <label>RUT *</label>
+              <input type="text" id="nc-rut" placeholder="12345678-9" maxlength="12"
+                oninput="nc_limpiarAlerta()" />
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+              <div class="form-group">
+                <label>Nombre *</label>
+                <input type="text" id="nc-nombre" placeholder="Ej: María González" />
+              </div>
+              <div class="form-group">
+                <label>Apellido *</label>
+                <input type="text" id="nc-apellido" placeholder="Ej: González" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Teléfono *</label>
+              <input type="tel" id="nc-telefono" placeholder="+56 9 1234 5678" />
+            </div>
+            <div class="form-group">
+              <label>Dirección</label>
+              <input type="text" id="nc-direccion" placeholder="Ej: Av. Velásquez 314, Puchuncaví" />
+            </div>
+
+            <div id="nc-alert" class="hidden"></div>
+
+            <div style="display:flex;gap:.75rem;margin-top:.5rem;">
+              <button class="btn btn-ghost" onclick="nc_reset()">Limpiar</button>
+              <button class="btn btn-primary btn-lg" style="flex:1" id="nc-btn-guardar" onclick="nc_guardar()">Registrar Cliente</button>
+            </div>
+          </div>
+
+          <div id="nc-success" class="hidden" style="margin-top:1rem;">
+            <div class="success-box">
+              <div class="success-icon">👤</div>
+              <h3>¡Cliente registrado!</h3>
+              <p id="nc-success-texto"></p>
+              <div style="display:flex;gap:.75rem;justify-content:center;margin-top:1.25rem;">
+                <button class="btn btn-ghost" onclick="showView('clientes')">Ver Clientes</button>
+                <button class="btn btn-primary" onclick="nc_reset()">Registrar otro</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ VIEW: RECOMPENSAS ══ -->
+      <div id="view-recompensas" class="view">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Tabla de Recompensas</h3>
+          </div>
+          <div class="recompensas-grid" id="recompensas-container"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ── INIT ──────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyCITs9ZPhe4pwz8ASJ1ljNe_f9ZB77aetc",
+      authDomain: "crunchy-71ccb.firebaseapp.com",
+      projectId: "crunchy-71ccb",
+      storageBucket: "crunchy-71ccb.firebasestorage.app",
+      messagingSenderId: "79457184640",
+      appId: "1:79457184640:web:c165278f2aad98db3b2f65"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ── RECOMPENSAS (configuración) ───────────────────
+    const RECOMPENSAS = [
+      { id: 'bebida',  nombre: 'Bebida Gratis',     descripcion: 'Lata a elección',           puntos: 20,  emoji: '🥤' },
+      { id: 'palitos', nombre: 'Palitos de Ajo',    descripcion: 'Porción completa',           puntos: 30,  emoji: '🥖' },
+      { id: 'porcion', nombre: 'Porción de Pizza',  descripcion: '1 slice a elección',         puntos: 50,  emoji: '🍕' },
+      { id: 'pizza',   nombre: 'Pizza Básica',      descripcion: 'Pizza completa a elección',  puntos: 100, emoji: '🍕' },
+    ];
+
+    // ── HELPERS ───────────────────────────────────────
+    function normRut(rut) {
+      const clean = rut.replace(/[^0-9kK]/gi, '').toUpperCase();
+      if (clean.length < 2) return '';
+      return clean.slice(0, -1) + '-' + clean.slice(-1);
+    }
+
+    function formatMonto(n) {
+      return '$' + Number(n).toLocaleString('es-CL');
+    }
+
+    function calcPuntos(monto) {
+      return Math.floor(Number(monto) / 1000);
+    }
+
+    function timeAgo(ts) {
+      if (!ts) return '';
+      const d = ts.toDate ? ts.toDate() : new Date(ts);
+      const diff = Math.floor((Date.now() - d) / 1000);
+      if (diff < 60) return 'hace un momento';
+      if (diff < 3600) return `hace ${Math.floor(diff/60)} min`;
+      if (diff < 86400) return `hace ${Math.floor(diff/3600)}h`;
+      return d.toLocaleDateString('es-CL');
+    }
+
+    function showAlert(containerId, msg, type = 'error') {
+      const el = document.getElementById(containerId);
+      el.className = `alert alert-${type}`;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function hideAlert(containerId) {
+      document.getElementById(containerId).classList.add('hidden');
+    }
+
+    // ── NAVEGACIÓN ────────────────────────────────────
+    const viewTitles = {
+      dashboard:       'Dashboard',
+      compra:          'Registrar Compra',
+      canjes:          'Canjes Pendientes',
+      clientes:        'Clientes',
+      'nuevo-cliente': 'Nuevo Cliente',
+      recompensas:     'Recompensas',
+    };
+
+    function showView(name) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      document.getElementById('view-' + name).classList.add('active');
+      document.querySelector(`[data-view="${name}"]`).classList.add('active');
+      document.getElementById('topbarTitle').textContent = viewTitles[name];
+
+      if (name === 'canjes') loadCanjes();
+      if (name === 'clientes') loadClientes();
+      if (name === 'recompensas') renderRecompensas();
+      if (name === 'compra') resetCompra();
+      if (name === 'nuevo-cliente') nc_reset();
+    }
+
+    // ── DASHBOARD ─────────────────────────────────────
+    function initDashboard() {
+      // Total clientes (live)
+      db.collection('clientes').onSnapshot(snap => {
+        document.getElementById('stat-clientes').textContent = snap.size;
+      });
+
+      // Canjes pendientes (live)
+      db.collection('canjes').where('estado', '==', 'pendiente').onSnapshot(snap => {
+        document.getElementById('stat-canjes-pendientes').textContent = snap.size;
+        const badge = document.getElementById('canjesBadge');
+        if (snap.size > 0) {
+          badge.textContent = snap.size;
+          badge.classList.add('show');
+        } else {
+          badge.classList.remove('show');
+        }
+      });
+
+      // Compras de hoy (live)
+      const hoy = new Date(); hoy.setHours(0,0,0,0);
+      db.collection('compras').where('fecha', '>=', hoy).onSnapshot(snap => {
+        let totalPuntos = 0, totalMonto = 0;
+        snap.forEach(doc => {
+          totalPuntos += doc.data().puntos || 0;
+          totalMonto  += doc.data().monto  || 0;
+        });
+        document.getElementById('stat-compras-hoy').textContent = snap.size;
+        document.getElementById('stat-puntos-hoy').textContent = totalPuntos;
+        document.getElementById('stat-ventas-hoy').textContent = formatMonto(totalMonto) + ' en ventas';
+      });
+
+      // Últimas compras (live)
+      db.collection('compras').orderBy('fecha', 'desc').limit(10).onSnapshot(snap => {
+        const rows = [];
+        snap.forEach(doc => rows.push({ id: doc.id, ...doc.data() }));
+        renderRecentCompras(rows);
+      });
+    }
+
+    function renderRecentCompras(rows) {
+      const container = document.getElementById('recent-compras-container');
+      if (!rows.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div>Sin compras registradas aún.</div>';
+        return;
+      }
+      container.innerHTML = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>RUT</th>
+              <th>Monto</th>
+              <th>Puntos</th>
+              <th>Cuando</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td><div class="td-name">${r.clienteNombre || '—'}</div></td>
+                <td><span style="color:var(--muted);font-size:.82rem">${r.clienteRut || '—'}</span></td>
+                <td><span class="td-price">${formatMonto(r.monto)}</span></td>
+                <td><span class="td-pts">+${r.puntos}</span></td>
+                <td><span style="color:var(--muted);font-size:.8rem">${timeAgo(r.fecha)}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    // ── REGISTRAR COMPRA ──────────────────────────────
+    let currentCliente = null;
+    let isNuevoCliente = false;
+
+    function resetCompra() {
+      currentCliente = null;
+      isNuevoCliente = false;
+      document.getElementById('input-rut').value = '';
+      document.getElementById('input-monto').value = '';
+      document.getElementById('step-rut').classList.remove('hidden');
+      document.getElementById('step-datos').classList.add('hidden');
+      document.getElementById('step-success').classList.add('hidden');
+      hideAlert('rut-alert');
+      hideAlert('datos-alert');
+    }
+
+    async function buscarCliente() {
+      const rutRaw = document.getElementById('input-rut').value.trim();
+      const rut = normRut(rutRaw);
+      if (!rut) { showAlert('rut-alert', 'Ingresá un RUT válido.', 'error'); return; }
+      hideAlert('rut-alert');
+
+      const btn = document.getElementById('btn-buscar');
+      btn.disabled = true; btn.textContent = 'Buscando...';
+
+      try {
+        const doc = await db.collection('clientes').doc(rut).get();
+        if (doc.exists) {
+          currentCliente = { rut, ...doc.data() };
+          isNuevoCliente = false;
+          document.getElementById('cc-nombre').textContent = currentCliente.nombre;
+          document.getElementById('cc-rut').textContent = rut;
+          document.getElementById('cc-puntos').textContent = currentCliente.puntos || 0;
+          document.getElementById('cliente-card-found').classList.remove('hidden');
+          document.getElementById('nuevo-cliente-fields').classList.add('hidden');
+        } else {
+          currentCliente = { rut };
+          isNuevoCliente = true;
+          document.getElementById('cliente-card-found').classList.add('hidden');
+          document.getElementById('nuevo-cliente-fields').classList.remove('hidden');
+        }
+        document.getElementById('step-rut').classList.add('hidden');
+        document.getElementById('step-datos').classList.remove('hidden');
+        document.getElementById('puntos-preview').querySelector('span').textContent = '0 puntos';
+      } catch (e) {
+        showAlert('rut-alert', 'Error al buscar el cliente. Intentá de nuevo.', 'error');
+      }
+
+      btn.disabled = false; btn.textContent = 'Buscar';
+    }
+
+    function actualizarPreviewPuntos() {
+      const monto = Number(document.getElementById('input-monto').value) || 0;
+      const pts = calcPuntos(monto);
+      document.getElementById('puntos-preview').innerHTML =
+        `<span>${pts} punto${pts !== 1 ? 's' : ''}</span> a acumular con ${formatMonto(monto)}`;
+    }
+
+    async function confirmarCompra() {
+      const monto = Number(document.getElementById('input-monto').value);
+      if (!monto || monto <= 0) { showAlert('datos-alert', 'Ingresá un monto válido.', 'error'); return; }
+
+      let nombre = currentCliente.nombre || '';
+      let telefono = currentCliente.telefono || '';
+
+      if (isNuevoCliente) {
+        nombre = document.getElementById('input-nombre').value.trim();
+        telefono = document.getElementById('input-telefono').value.trim();
+        if (!nombre) { showAlert('datos-alert', 'Ingresá el nombre del cliente.', 'error'); return; }
+      }
+
+      hideAlert('datos-alert');
+      const btn = document.getElementById('btn-confirmar');
+      btn.disabled = true; btn.textContent = 'Guardando...';
+
+      const puntos = calcPuntos(monto);
+      const rut = currentCliente.rut;
+      const puntosActuales = currentCliente.puntos || 0;
+
+      try {
+        const batch = db.batch();
+
+        // Crear o actualizar cliente
+        const clienteRef = db.collection('clientes').doc(rut);
+        batch.set(clienteRef, {
+          rut,
+          nombre,
+          telefono,
+          puntos: puntosActuales + puntos,
+          totalGastado: firebase.firestore.FieldValue.increment(monto),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          ...(isNuevoCliente ? { createdAt: firebase.firestore.FieldValue.serverTimestamp() } : {})
+        }, { merge: true });
+
+        // Registrar compra
+        const compraRef = db.collection('compras').doc();
+        batch.set(compraRef, {
+          clienteRut: rut,
+          clienteNombre: nombre,
+          monto,
+          puntos,
+          fecha: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+        await batch.commit();
+
+        // Mostrar éxito
+        document.getElementById('step-datos').classList.add('hidden');
+        document.getElementById('step-success').classList.remove('hidden');
+        document.getElementById('success-texto').textContent =
+          `${nombre} · ${formatMonto(monto)} · RUT ${rut}`;
+        document.getElementById('success-pts').innerHTML =
+          `+${puntos}<small>puntos ganados</small>`;
+
+      } catch (e) {
+        showAlert('datos-alert', 'Error al guardar. Intentá de nuevo.', 'error');
+      }
+
+      btn.disabled = false; btn.textContent = 'Confirmar Compra';
+    }
+
+    // ── CANJES ────────────────────────────────────────
+    let canjesListener = null;
+
+    function loadCanjes() {
+      if (canjesListener) canjesListener();
+      canjesListener = db.collection('canjes')
+        .where('estado', '==', 'pendiente')
+        .orderBy('fecha', 'desc')
+        .onSnapshot(snap => {
+          const canjes = [];
+          snap.forEach(doc => canjes.push({ id: doc.id, ...doc.data() }));
+          renderCanjes(canjes);
+        });
+    }
+
+    function renderCanjes(canjes) {
+      const container = document.getElementById('canjes-container');
+      if (!canjes.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🎁</div>No hay canjes pendientes.</div>';
+        return;
+      }
+      container.innerHTML = canjes.map(c => `
+        <div class="canje-row" id="canje-${c.id}">
+          <div class="canje-info">
+            <strong>${c.clienteNombre} · ${c.recompensaNombre}</strong>
+            <span>${c.clienteRut} · ${timeAgo(c.fecha)}</span>
+          </div>
+          <div class="canje-pts">-${c.puntosRequeridos} pts</div>
+          <div class="canje-actions">
+            <button class="btn btn-green btn-sm" onclick="aprobarCanje('${c.id}', '${c.clienteRut}', ${c.puntosRequeridos})">Aprobar</button>
+            <button class="btn btn-danger btn-sm" onclick="rechazarCanje('${c.id}', '${c.clienteRut}', ${c.puntosRequeridos})">Rechazar</button>
+          </div>
+        </div>`).join('');
+    }
+
+    async function aprobarCanje(canjeId, clienteRut, puntos) {
+      if (!confirm('¿Aprobás este canje?')) return;
+      try {
+        const batch = db.batch();
+        batch.update(db.collection('canjes').doc(canjeId), {
+          estado: 'aprobado',
+          fechaValidacion: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        // Los puntos ya fueron descontados al solicitar, no se tocan
+        await batch.commit();
+      } catch (e) { alert('Error al aprobar.'); }
+    }
+
+    async function rechazarCanje(canjeId, clienteRut, puntos) {
+      if (!confirm('¿Rechazás este canje? Se devolverán los puntos al cliente.')) return;
+      try {
+        const batch = db.batch();
+        batch.update(db.collection('canjes').doc(canjeId), {
+          estado: 'rechazado',
+          fechaValidacion: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        // Devolver puntos
+        batch.update(db.collection('clientes').doc(clienteRut), {
+          puntos: firebase.firestore.FieldValue.increment(puntos)
+        });
+        await batch.commit();
+      } catch (e) { alert('Error al rechazar.'); }
+    }
+
+    // ── CLIENTES ──────────────────────────────────────
+    let allClientes = [];
+
+    async function loadClientes() {
+      document.getElementById('clientes-container').innerHTML = '<div class="loading-state">Cargando...</div>';
+      try {
+        const snap = await db.collection('clientes').orderBy('puntos', 'desc').get();
+        allClientes = [];
+        snap.forEach(doc => allClientes.push({ id: doc.id, ...doc.data() }));
+        filtrarClientes();
+      } catch (e) {
+        document.getElementById('clientes-container').innerHTML = '<div class="empty-state">Error al cargar clientes.</div>';
+      }
+    }
+
+    function filtrarClientes() {
+      const q = (document.getElementById('search-clientes').value || '').toLowerCase();
+      const filtered = q
+        ? allClientes.filter(c =>
+            (c.nombre || '').toLowerCase().includes(q) ||
+            (c.rut || '').toLowerCase().includes(q))
+        : allClientes;
+
+      document.getElementById('clientes-count').textContent = `${filtered.length} cliente${filtered.length !== 1 ? 's' : ''}`;
+
+      if (!filtered.length) {
+        document.getElementById('clientes-container').innerHTML =
+          '<div class="empty-state"><div class="empty-icon">👤</div>Sin resultados.</div>';
+        return;
+      }
+
+      document.getElementById('clientes-container').innerHTML = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>RUT</th>
+              <th>Puntos</th>
+              <th>Total gastado</th>
+              <th>Nivel</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filtered.map(c => `
+              <tr>
+                <td><div class="td-name">${c.nombre}</div>${c.telefono ? `<div class="td-sub">${c.telefono}</div>` : ''}</td>
+                <td><span style="color:var(--muted);font-size:.82rem">${c.rut}</span></td>
+                <td><span class="td-pts">${c.puntos || 0}</span></td>
+                <td><span class="td-price">${formatMonto(c.totalGastado || 0)}</span></td>
+                <td><span class="badge ${badgeNivel(c.puntos)}">${nivel(c.puntos)}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    function nivel(pts) {
+      if ((pts||0) >= 300) return 'Diamante';
+      if ((pts||0) >= 150) return 'Oro';
+      if ((pts||0) >= 50)  return 'Plata';
+      return 'Bronce';
+    }
+    function badgeNivel(pts) {
+      if ((pts||0) >= 300) return 'badge-aprobado';
+      if ((pts||0) >= 150) return 'badge-pendiente';
+      if ((pts||0) >= 50)  return 'badge-pendiente';
+      return 'badge-rechazado';
+    }
+
+    // ── NUEVO CLIENTE ─────────────────────────────────
+    function nc_reset() {
+      ['nc-rut','nc-nombre','nc-apellido','nc-telefono','nc-direccion'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('nc-form').classList.remove('hidden');
+      document.getElementById('nc-success').classList.add('hidden');
+      hideAlert('nc-alert');
+    }
+
+    function nc_limpiarAlerta() { hideAlert('nc-alert'); }
+
+    async function nc_guardar() {
+      const rut      = normRut(document.getElementById('nc-rut').value.trim());
+      const nombre   = document.getElementById('nc-nombre').value.trim();
+      const apellido = document.getElementById('nc-apellido').value.trim();
+      const telefono = document.getElementById('nc-telefono').value.trim();
+      const direccion= document.getElementById('nc-direccion').value.trim();
+
+      if (!rut)      { showAlert('nc-alert', 'El RUT es obligatorio.', 'error'); return; }
+      if (!nombre)   { showAlert('nc-alert', 'El nombre es obligatorio.', 'error'); return; }
+      if (!apellido) { showAlert('nc-alert', 'El apellido es obligatorio.', 'error'); return; }
+      if (!telefono) { showAlert('nc-alert', 'El teléfono es obligatorio.', 'error'); return; }
+
+      const btn = document.getElementById('nc-btn-guardar');
+      btn.disabled = true; btn.textContent = 'Guardando...';
+
+      try {
+        const existing = await db.collection('clientes').doc(rut).get();
+        if (existing.exists) {
+          showAlert('nc-alert', `El RUT ${rut} ya está registrado.`, 'error');
+          btn.disabled = false; btn.textContent = 'Registrar Cliente';
+          return;
+        }
+
+        await db.collection('clientes').doc(rut).set({
+          rut,
+          nombre: nombre + ' ' + apellido,
+          telefono,
+          direccion,
+          puntos: 0,
+          totalGastado: 0,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+        document.getElementById('nc-form').classList.add('hidden');
+        document.getElementById('nc-success').classList.remove('hidden');
+        document.getElementById('nc-success-texto').textContent =
+          `${nombre} ${apellido} · ${rut} · ${telefono}`;
+
+      } catch(e) {
+        showAlert('nc-alert', 'Error al guardar. Intentá de nuevo.', 'error');
+      }
+
+      btn.disabled = false; btn.textContent = 'Registrar Cliente';
+    }
+
+    // ── RECOMPENSAS ───────────────────────────────────
+    function renderRecompensas() {
+      document.getElementById('recompensas-container').innerHTML = RECOMPENSAS.map(r => `
+        <div class="recompensa-card">
+          <div class="emoji">${r.emoji}</div>
+          <h4>${r.nombre}</h4>
+          <p>${r.descripcion}</p>
+          <div class="recompensa-pts">${r.puntos} <small>puntos</small></div>
+        </div>`).join('');
+    }
+
+    // ── START ─────────────────────────────────────────
+    initDashboard();
+  </script>
+</body>
+</html>

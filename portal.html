@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal — Crunchy Pizzeria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:   #C8102E;
+      --dark:  #111111;
+      --cream: #F5F0E8;
+      --gray:  #888;
+      --white: #FFFFFF;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .back-link {
+      position: fixed;
+      top: 1.5rem;
+      left: 1.75rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--white); }
+
+    .portal-logo {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    .portal-sub {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 3.5rem;
+      text-align: center;
+    }
+
+    .portal-cards {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .portal-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 2.5rem 2rem;
+      width: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .portal-card:hover {
+      border-color: var(--red);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(200,16,46,0.15);
+    }
+
+    .portal-card-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .portal-card-icon.red  { background: rgba(200,16,46,0.15); color: var(--red); }
+    .portal-card-icon.gray { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+
+    .portal-card-icon svg { width: 28px; height: 28px; }
+
+    .portal-card h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+
+    .portal-card p {
+      font-size: 0.83rem;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+    }
+
+    .portal-card .card-arrow {
+      margin-top: 0.5rem;
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.2);
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .portal-card:hover .card-arrow {
+      color: var(--red);
+      transform: translateX(4px);
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back-link">← Volver al sitio</a>
+
+  <div class="portal-logo">CRUNCHY PIZZERIA</div>
+  <p class="portal-sub">Portal de acceso</p>
+
+  <div class="portal-cards">
+
+    <a href="cliente.html" class="portal-card">
+      <div class="portal-card-icon gray">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <h2>Clientes</h2>
+      <p>Accedé a tu cuenta, revisá tus pedidos y acumulá puntos.</p>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a href="admin.html" class="portal-card">
+      <div class="portal-card-icon red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+      </div>
+      <h2>Administración</h2>
+      <p>Panel de control para gestionar pedidos, menú y clientes.</p>
+      <span class="card-arrow">→</span>
+    </a>
+
+  </div>
+
+</body>
+</html>

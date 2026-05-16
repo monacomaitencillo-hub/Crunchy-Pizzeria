@@ -746,6 +746,37 @@ body {
 }
 
 /* =====================
+   PORTAL FAB BUTTON
+===================== */
+.portal-fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--dark);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.portal-fab:hover {
+  background: var(--red);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(200,16,46,0.4);
+}
+
+/* =====================
    RESPONSIVE
 ===================== */
 @media (max-width: 900px) {
