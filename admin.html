@@ -286,12 +286,14 @@
 
     /* ── RECOMPENSAS GRID ── */
     .recompensas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 1rem; padding: 1.5rem; }
-    .recompensa-card { background: #141414; border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+    .recompensa-card { background: #141414; border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; position: relative; }
     .recompensa-card .emoji { font-size: 2rem; margin-bottom: 0.5rem; }
     .recompensa-card h4 { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.25rem; }
     .recompensa-card p { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.75rem; }
     .recompensa-pts { font-family: 'Oswald', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--red); }
     .recompensa-pts small { font-family: 'Lato', sans-serif; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .recompensa-actions { display: flex; gap: .5rem; margin-top: .85rem; }
+    .recompensas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 1rem; padding: 1.5rem; }
 
     /* ── CANJES ── */
     .canje-row { padding: 1rem 1.5rem; border-bottom: 1px solid #1f1f1f; display: flex; align-items: center; gap: 1rem; }
@@ -537,8 +539,8 @@
               <input type="tel" id="nc-telefono" placeholder="+56 9 1234 5678" />
             </div>
             <div class="form-group">
-              <label>Dirección</label>
-              <input type="text" id="nc-direccion" placeholder="Ej: Av. Velásquez 314, Puchuncaví" />
+              <label>Correo Electrónico *</label>
+              <input type="email" id="nc-email" placeholder="Ej: maria@gmail.com" />
             </div>
 
             <div id="nc-alert" class="hidden"></div>
@@ -568,7 +570,41 @@
         <div class="panel">
           <div class="panel-header">
             <h3>Tabla de Recompensas</h3>
+            <button class="btn btn-primary btn-sm" onclick="rw_mostrarNueva()">+ Nueva recompensa</button>
           </div>
+
+          <!-- Formulario nueva / editar -->
+          <div id="rw-form-wrap" class="hidden" style="padding:1.5rem;border-bottom:1px solid var(--border);">
+            <div style="display:grid;grid-template-columns:64px 1fr 1fr auto;gap:1rem;align-items:end;">
+              <div class="form-group" style="margin:0">
+                <label>Emoji</label>
+                <input type="text" id="rw-emoji" placeholder="🍕" maxlength="4"
+                  style="background:#111;border:1px solid var(--border);color:var(--white);font-size:1.5rem;padding:.5rem;border-radius:4px;width:100%;outline:none;text-align:center;" />
+              </div>
+              <div class="form-group" style="margin:0">
+                <label>Nombre</label>
+                <input type="text" id="rw-nombre" placeholder="Ej: Pizza Gratis"
+                  style="background:#111;border:1px solid var(--border);color:var(--white);font-family:'Lato',sans-serif;font-size:.95rem;padding:.65rem 1rem;border-radius:4px;width:100%;outline:none;" />
+              </div>
+              <div class="form-group" style="margin:0">
+                <label>Descripción</label>
+                <input type="text" id="rw-descripcion" placeholder="Ej: Pizza básica a elección"
+                  style="background:#111;border:1px solid var(--border);color:var(--white);font-family:'Lato',sans-serif;font-size:.95rem;padding:.65rem 1rem;border-radius:4px;width:100%;outline:none;" />
+              </div>
+              <div class="form-group" style="margin:0">
+                <label>Puntos</label>
+                <input type="number" id="rw-puntos" placeholder="50" min="1"
+                  style="background:#111;border:1px solid var(--border);color:var(--white);font-family:'Lato',sans-serif;font-size:.95rem;padding:.65rem 1rem;border-radius:4px;width:100px;outline:none;" />
+              </div>
+            </div>
+            <div id="rw-alert" class="hidden" style="margin-top:.75rem;"></div>
+            <div style="display:flex;gap:.75rem;margin-top:1rem;">
+              <button class="btn btn-ghost btn-sm" onclick="rw_cancelar()">Cancelar</button>
+              <button class="btn btn-primary btn-sm" id="rw-btn-guardar" onclick="rw_guardar()">Guardar</button>
+            </div>
+            <input type="hidden" id="rw-edit-id" value="" />
+          </div>
+
           <div class="recompensas-grid" id="recompensas-container"></div>
         </div>
       </div>
@@ -656,7 +692,7 @@
 
       if (name === 'canjes') loadCanjes();
       if (name === 'clientes') loadClientes();
-      if (name === 'recompensas') renderRecompensas();
+      if (name === 'recompensas') loadRecompensas();
       if (name === 'compra') resetCompra();
       if (name === 'nuevo-cliente') nc_reset();
     }
@@ -988,7 +1024,7 @@
 
     // ── NUEVO CLIENTE ─────────────────────────────────
     function nc_reset() {
-      ['nc-rut','nc-nombre','nc-apellido','nc-telefono','nc-direccion'].forEach(id => {
+      ['nc-rut','nc-nombre','nc-apellido','nc-telefono','nc-email'].forEach(id => {
         document.getElementById(id).value = '';
       });
       document.getElementById('nc-form').classList.remove('hidden');
@@ -1003,12 +1039,14 @@
       const nombre   = document.getElementById('nc-nombre').value.trim();
       const apellido = document.getElementById('nc-apellido').value.trim();
       const telefono = document.getElementById('nc-telefono').value.trim();
-      const direccion= document.getElementById('nc-direccion').value.trim();
+      const email    = document.getElementById('nc-email').value.trim();
 
       if (!rut)      { showAlert('nc-alert', 'El RUT es obligatorio.', 'error'); return; }
       if (!nombre)   { showAlert('nc-alert', 'El nombre es obligatorio.', 'error'); return; }
       if (!apellido) { showAlert('nc-alert', 'El apellido es obligatorio.', 'error'); return; }
       if (!telefono) { showAlert('nc-alert', 'El teléfono es obligatorio.', 'error'); return; }
+      if (!email)    { showAlert('nc-alert', 'El correo electrónico es obligatorio.', 'error'); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAlert('nc-alert', 'Ingresá un correo válido.', 'error'); return; }
 
       const btn = document.getElementById('nc-btn-guardar');
       btn.disabled = true; btn.textContent = 'Guardando...';
@@ -1025,7 +1063,7 @@
           rut,
           nombre: nombre + ' ' + apellido,
           telefono,
-          direccion,
+          email,
           puntos: 0,
           totalGastado: 0,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -1035,7 +1073,7 @@
         document.getElementById('nc-form').classList.add('hidden');
         document.getElementById('nc-success').classList.remove('hidden');
         document.getElementById('nc-success-texto').textContent =
-          `${nombre} ${apellido} · ${rut} · ${telefono}`;
+          `${nombre} ${apellido} · ${rut} · ${telefono} · ${email}`;
 
       } catch(e) {
         showAlert('nc-alert', 'Error al guardar. Intentá de nuevo.', 'error');
@@ -1044,15 +1082,117 @@
       btn.disabled = false; btn.textContent = 'Registrar Cliente';
     }
 
-    // ── RECOMPENSAS ───────────────────────────────────
-    function renderRecompensas() {
-      document.getElementById('recompensas-container').innerHTML = RECOMPENSAS.map(r => `
+    // ── RECOMPENSAS (Firestore) ───────────────────────
+    const RECOMPENSAS_DEFAULT = [
+      { nombre: 'Bebida Gratis',    descripcion: 'Lata a elección',          puntos: 20,  emoji: '🥤' },
+      { nombre: 'Palitos de Ajo',   descripcion: 'Porción completa',          puntos: 30,  emoji: '🥖' },
+      { nombre: 'Porción de Pizza', descripcion: '1 slice a elección',        puntos: 50,  emoji: '🍕' },
+      { nombre: 'Pizza Básica',     descripcion: 'Pizza completa a elección', puntos: 100, emoji: '🍕' },
+    ];
+
+    async function loadRecompensas() {
+      const container = document.getElementById('recompensas-container');
+      container.innerHTML = '<div class="loading-state" style="grid-column:1/-1">Cargando...</div>';
+
+      const snap = await db.collection('recompensas').orderBy('puntos', 'asc').get();
+
+      // Seed si está vacío
+      if (snap.empty) {
+        const batch = db.batch();
+        RECOMPENSAS_DEFAULT.forEach(r => {
+          batch.set(db.collection('recompensas').doc(), r);
+        });
+        await batch.commit();
+        loadRecompensas();
+        return;
+      }
+
+      const recompensas = [];
+      snap.forEach(doc => recompensas.push({ id: doc.id, ...doc.data() }));
+      renderRecompensas(recompensas);
+    }
+
+    function renderRecompensas(recompensas) {
+      document.getElementById('recompensas-container').innerHTML = recompensas.map(r => `
         <div class="recompensa-card">
           <div class="emoji">${r.emoji}</div>
           <h4>${r.nombre}</h4>
           <p>${r.descripcion}</p>
           <div class="recompensa-pts">${r.puntos} <small>puntos</small></div>
+          <div class="recompensa-actions">
+            <button class="btn btn-ghost btn-sm" style="flex:1" onclick="rw_editar('${r.id}','${r.emoji}',\`${r.nombre}\`,\`${r.descripcion}\`,${r.puntos})">✏ Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="rw_eliminar('${r.id}','${r.nombre}')">✕</button>
+          </div>
         </div>`).join('');
+    }
+
+    function rw_mostrarNueva() {
+      document.getElementById('rw-edit-id').value = '';
+      document.getElementById('rw-emoji').value = '';
+      document.getElementById('rw-nombre').value = '';
+      document.getElementById('rw-descripcion').value = '';
+      document.getElementById('rw-puntos').value = '';
+      document.getElementById('rw-btn-guardar').textContent = 'Guardar';
+      hideAlert('rw-alert');
+      document.getElementById('rw-form-wrap').classList.remove('hidden');
+      document.getElementById('rw-nombre').focus();
+    }
+
+    function rw_editar(id, emoji, nombre, descripcion, puntos) {
+      document.getElementById('rw-edit-id').value = id;
+      document.getElementById('rw-emoji').value = emoji;
+      document.getElementById('rw-nombre').value = nombre;
+      document.getElementById('rw-descripcion').value = descripcion;
+      document.getElementById('rw-puntos').value = puntos;
+      document.getElementById('rw-btn-guardar').textContent = 'Actualizar';
+      hideAlert('rw-alert');
+      document.getElementById('rw-form-wrap').classList.remove('hidden');
+      document.getElementById('rw-form-wrap').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function rw_cancelar() {
+      document.getElementById('rw-form-wrap').classList.add('hidden');
+      hideAlert('rw-alert');
+    }
+
+    async function rw_guardar() {
+      const editId      = document.getElementById('rw-edit-id').value;
+      const emoji       = document.getElementById('rw-emoji').value.trim() || '🍕';
+      const nombre      = document.getElementById('rw-nombre').value.trim();
+      const descripcion = document.getElementById('rw-descripcion').value.trim();
+      const puntos      = Number(document.getElementById('rw-puntos').value);
+
+      if (!nombre)        { showAlert('rw-alert', 'El nombre es obligatorio.', 'error'); return; }
+      if (!descripcion)   { showAlert('rw-alert', 'La descripción es obligatoria.', 'error'); return; }
+      if (!puntos || puntos < 1) { showAlert('rw-alert', 'Ingresá una cantidad de puntos válida.', 'error'); return; }
+
+      const btn = document.getElementById('rw-btn-guardar');
+      btn.disabled = true; btn.textContent = 'Guardando...';
+
+      try {
+        if (editId) {
+          await db.collection('recompensas').doc(editId).update({ emoji, nombre, descripcion, puntos });
+        } else {
+          await db.collection('recompensas').doc().set({ emoji, nombre, descripcion, puntos });
+        }
+        rw_cancelar();
+        loadRecompensas();
+      } catch(e) {
+        showAlert('rw-alert', 'Error al guardar. Intentá de nuevo.', 'error');
+      }
+
+      btn.disabled = false;
+      btn.textContent = editId ? 'Actualizar' : 'Guardar';
+    }
+
+    async function rw_eliminar(id, nombre) {
+      if (!confirm(`¿Eliminás la recompensa "${nombre}"? Los canjes pendientes de esta recompensa no se verán afectados.`)) return;
+      try {
+        await db.collection('recompensas').doc(id).delete();
+        loadRecompensas();
+      } catch(e) {
+        alert('Error al eliminar.');
+      }
     }
 
     // ── START ─────────────────────────────────────────

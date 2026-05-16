@@ -358,12 +358,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    const RECOMPENSAS = [
-      { id: 'bebida',  nombre: 'Bebida Gratis',    descripcion: 'Lata a elección',          puntos: 20,  emoji: '🥤' },
-      { id: 'palitos', nombre: 'Palitos de Ajo',   descripcion: 'Porción completa',          puntos: 30,  emoji: '🥖' },
-      { id: 'porcion', nombre: 'Porción de Pizza', descripcion: '1 slice a elección',        puntos: 50,  emoji: '🍕' },
-      { id: 'pizza',   nombre: 'Pizza Básica',     descripcion: 'Pizza completa a elección', puntos: 100, emoji: '🍕' },
-    ];
+    let RECOMPENSAS = [];
 
     const NIVELES = [
       { nombre: 'Bronce',   min: 0,   max: 49,  css: 'nivel-bronce'   },
@@ -447,9 +442,15 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('dashboardScreen').style.display = 'block';
       actualizarCard(clienteActual);
-      renderRecompensas(clienteActual.puntos || 0);
       cargarHistorial(clienteActual.rut);
       cargarCanjesPendientes(clienteActual.rut);
+
+      // Cargar recompensas desde Firestore
+      db.collection('recompensas').orderBy('puntos', 'asc').get().then(snap => {
+        RECOMPENSAS = [];
+        snap.forEach(doc => RECOMPENSAS.push({ id: doc.id, ...doc.data() }));
+        renderRecompensas(clienteActual.puntos || 0);
+      });
 
       // Live listener para puntos
       db.collection('clientes').doc(clienteActual.rut).onSnapshot(snap => {
